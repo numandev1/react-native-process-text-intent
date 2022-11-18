@@ -1,6 +1,10 @@
 # react-native-process-text-intent
 
-get text from android PROCESS_TEXT intent
+Get text from android `android.intent.action.PROCESS_TEXT` intent-filter
+
+# Demo
+
+<img src="media/demo.gif" width="40%" />
 
 ## Installation
 
@@ -11,11 +15,30 @@ npm install react-native-process-text-intent
 ## Usage
 
 ```js
-import { multiply } from 'react-native-process-text-intent';
+import { getProcessTextIntent } from 'react-native-process-text-intent';
 
 // ...
 
-const result = await multiply(3, 7);
+getProcessTextIntent()
+  .then((textResult) => {
+    if (textResult) {
+      console.log(textResult, 'ProcessedText');   // here will be your processed Text coming from android.intent.action.PROCESS_TEXT intent-filter
+    }
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+};
+```
+
+first you need to add this `intent-filter` in `AndroidManifest.xml`
+
+```xml
+<intent-filter>
+  <action android:name="android.intent.action.PROCESS_TEXT" />
+  <category android:name="android.intent.category.DEFAULT" />
+  <data android:mimeType="text/plain" />
+</intent-filter>
 ```
 
 ## Contributing

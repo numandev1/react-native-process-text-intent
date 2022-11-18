@@ -1,18 +1,38 @@
-import * as React from 'react';
+import { getProcessTextIntent } from 'react-native-process-text-intent';
 
-import { StyleSheet, View, Text } from 'react-native';
-import { multiply } from 'react-native-process-text-intent';
+import React, { useEffect } from 'react';
+import { AppState, StyleSheet, View, Text, AppStateStatus } from 'react-native';
 
 export default function App() {
-  const [result, setResult] = React.useState<number | undefined>();
+  const [text, setText] = React.useState<string>('');
 
-  React.useEffect(() => {
-    multiply(3, 7).then(setResult);
+  const getTextFromProcessedTextIntent = () => {
+    getProcessTextIntent()
+      .then((textResult) => {
+        if (textResult) {
+          console.log(textResult, 'ProcessedText');
+          setText(textResult);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    getTextFromProcessedTextIntent();
+    const listener = (state: AppStateStatus) => {
+      if (state === 'active') {
+        getTextFromProcessedTextIntent();
+      }
+    };
+    const appState = AppState.addEventListener('change', listener);
+    return () => appState.remove();
   }, []);
 
   return (
     <View style={styles.container}>
-      <Text>Result: {result}</Text>
+      <Text>Text: {text}</Text>
     </View>
   );
 }
@@ -22,10 +42,5 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  box: {
-    width: 60,
-    height: 60,
-    marginVertical: 20,
   },
 });

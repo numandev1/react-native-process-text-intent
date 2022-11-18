@@ -17,6 +17,6 @@ const ProcessTextIntent = NativeModules.ProcessTextIntent
       }
     );
 
-export function multiply(a: number, b: number): Promise<number> {
-  return ProcessTextIntent.multiply(a, b);
+export function getProcessTextIntent(): Promise<string> {
+  return ProcessTextIntent.processedText();
 }

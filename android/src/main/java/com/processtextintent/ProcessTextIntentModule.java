@@ -1,5 +1,8 @@
 package com.processtextintent;
 
+import android.app.Activity;
+import android.content.Intent;
+
 import androidx.annotation.NonNull;
 
 import com.facebook.react.bridge.Promise;
@@ -23,10 +26,14 @@ public class ProcessTextIntentModule extends ReactContextBaseJavaModule {
   }
 
 
-  // Example method
-  // See https://reactnative.dev/docs/native-modules-android
   @ReactMethod
-  public void multiply(double a, double b, Promise promise) {
-    promise.resolve(a * b);
+  public void processedText(Promise promise) {
+    try {
+        Activity activity= getCurrentActivity();
+        CharSequence text = activity.getIntent().getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT);
+        promise.resolve(text);
+    } catch (Exception ex) {
+        promise.reject(ex);
+    }
   }
 }
